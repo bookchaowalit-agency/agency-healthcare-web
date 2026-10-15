@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -17,6 +18,8 @@ jobs:
   web-checks:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -24,9 +27,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run build
-        env:
-          NEXT_TELEMETRY_DISABLED: 1
+      - run: npm run check
+      - name: Verify static export and default noindex
+        run: |
+          test -d out
+          grep -Fxq 'Disallow: /' out/robots.txt
