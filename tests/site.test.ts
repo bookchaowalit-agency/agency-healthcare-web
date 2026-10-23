@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
+import { describe, it } from 'vitest';
 import { canonicalUrl, pageMetadata, parsePublicUrl, resolveSiteConfig, sitemapPaths } from '../lib/site-config.ts';
 import { serviceStructuredData } from '../lib/structured-data.ts';
 import { pseoService } from '../lib/pseo.ts';
