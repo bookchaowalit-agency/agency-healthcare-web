@@ -22,7 +22,8 @@ jobs:
     with:
       require-tests: true
       coverage-threshold: "82"
-      build-command: NEXT_TELEMETRY_DISABLED=1 npm run check && test -d out && grep -Fxq 'Disallow: /' out/robots.txt
+      build-command: >-
+        NEXT_TELEMETRY_DISABLED=1 npm run check && test -d out && grep -Fxq 'Disallow: /' out/robots.txt
 
   # Shared security scan: gitleaks, Semgrep, OSV-Scanner, Trivy.
   security:
