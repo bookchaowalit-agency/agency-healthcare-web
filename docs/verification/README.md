@@ -12,6 +12,10 @@
 ## Local checks
 
 ```bash
-npm run typecheck
-npm run build
+npm run lint
+npm test        # indexing gate, robots/sitemap (noindex default), pSEO route, renders, social card, Sentry
+npm run check   # lint + typecheck + tests + static export
 ```
+
+`tests/site.test.ts` and `tests/seo-routes.test.ts` pin the noindex / `Disallow: /` default; CI also greps
+`out/robots.txt` for `Disallow: /`.
