@@ -1,9 +1,10 @@
 import { renderToStaticMarkup } from "react-dom/server";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { site } from "@/lib/site";
-import { OG_SIZE, ogCard } from "@/lib/og-card";
+import { OG_SIZE, ogCard, ogFingerprint } from "@/lib/og-card";
 
 // The layout loads local fonts through a build-time transform; a stub is enough to read its metadata.
 vi.mock("next/font/local", () => ({ default: () => ({ variable: "font" }) }));
@@ -18,6 +19,13 @@ describe("social card image", () => {
     expect(png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))).toBe(true);
     expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([OG_SIZE.width, OG_SIZE.height]);
     expect(existsSync(join(process.cwd(), "app", "og.png"))).toBe(false);
+  });
+
+  it("was drawn from the current site data (title, world, scope, colours, domain): else run node scripts/og.mjs", () => {
+    const sha = (data: string | Buffer) => createHash("sha256").update(data).digest("hex");
+    const manifest = JSON.parse(readFileSync(join(process.cwd(), "lib", "og-manifest.json"), "utf8"));
+    expect(manifest.input, "lib/site.ts changed since public/og.png was drawn: run node scripts/og.mjs").toBe(sha(ogFingerprint(site)));
+    expect(manifest.png, "public/og.png is not the file scripts/og.mjs wrote").toBe(sha(readFileSync(join(process.cwd(), "public", "og.png"))));
   });
 
   it("draws the site name, visual world and every scope chip (node scripts/og.mjs writes it)", () => {

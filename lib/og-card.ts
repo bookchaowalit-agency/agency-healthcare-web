@@ -8,6 +8,18 @@ type Site = typeof SiteModule.site;
 // Text stays ASCII: the built-in ImageResponse font has no Thai glyphs.
 export const OG_SIZE = { width: 1200, height: 630 } as const;
 
+/** Bump when the card's layout changes, so every committed public/og.png must be redrawn. */
+export const OG_CARD_VERSION = 1;
+
+/**
+ * Everything the committed card depends on: layout version, title, world, scope, colours and the site's domain.
+ * scripts/og.mjs stores its hash in lib/og-manifest.json; tests/opengraph.test.tsx fails when it no longer matches.
+ */
+export function ogFingerprint(site: Site): string {
+  const { name, scope, design } = site;
+  return JSON.stringify({ v: OG_CARD_VERSION, name, world: design.world, scope, colors: design.colors, url: design.productionUrl });
+}
+
 export function ogCard(site: Site): ReactElement {
   const colors = site.design.colors;
   const chips: readonly string[] = site.scope;

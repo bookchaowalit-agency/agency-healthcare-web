@@ -8,6 +8,7 @@ import { LangText } from '@/components/lang-text';
 import { pseoService } from '@/lib/pseo';
 import type { AgencyStatus } from '@/lib/readiness';
 import { site } from '@/lib/site';
+import { socialImage } from '@/lib/site-config';
 
 // 2026-11-18 review: hub links, Thai nav, honest next step for each readiness state.
 describe('UX floor', () => {
@@ -38,7 +39,8 @@ describe('UX floor', () => {
   it('shares the Open Graph image on service pages too', async () => {
     const { generateMetadata } = await import('@/app/services/[slug]/page');
     const meta = await generateMetadata({ params: Promise.resolve({ slug: pseoService.slug }) });
-    expect(JSON.stringify(meta.openGraph)).toMatch(/"url":"https:\/\/[^"]+\/og\.png"/);
+    // Whatever base URL this build uses (NEXT_PUBLIC_SITE_URL or the production fallback), the service page shares it.
+    expect(JSON.stringify(meta.openGraph)).toContain(JSON.stringify(socialImage.url));
     expect(meta.twitter).toMatchObject({ card: 'summary_large_image' });
   });
 
