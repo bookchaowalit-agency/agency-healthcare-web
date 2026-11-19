@@ -21,6 +21,12 @@ export function parsePublicUrl(value: string | undefined) {
   }
 }
 
+// The site's own production domain (lib/site.ts): absolute URLs in metadata (og:image, twitter:image) fall back to it,
+// never to localhost. Canonical links and indexing still need the approved NEXT_PUBLIC_SITE_URL.
+const parsedProductionUrl = parsePublicUrl(site.design.productionUrl);
+if (!parsedProductionUrl?.startsWith('https://')) throw new Error('lib/site.ts design.productionUrl must be an https URL');
+const productionUrl: string = parsedProductionUrl;
+
 /**
  * The site is noindex by default. It only becomes indexable when an approved
  * public URL is configured AND NEXT_PUBLIC_SITE_INDEXABLE is exactly "true".
@@ -31,7 +37,8 @@ export function resolveSiteConfig(env: SiteEnv) {
     name: site.name,
     description: site.promise,
     publicUrl,
-    metadataUrl: publicUrl ?? 'http://localhost:3010',
+    productionUrl,
+    metadataUrl: publicUrl ?? productionUrl,
     isIndexable: Boolean(publicUrl) && env.NEXT_PUBLIC_SITE_INDEXABLE === 'true',
   } as const;
 }
@@ -52,16 +59,18 @@ export function canonicalUrl(path: string, config: SiteConfig = siteConfig) {
   return config.publicUrl ? absoluteUrl(path, config) : undefined;
 }
 
-const ogImage = { url: '/opengraph-image', width: 1200, height: 630, alt: site.name } as const;
+// Served by app/og.png/route.tsx, which the static export writes as out/og.png (a real .png, so image/png).
+export const socialImage = { url: absoluteUrl('/og.png'), width: 1200, height: 630, alt: site.name + ' — ' + site.design.world } as const;
 
 export function pageMetadata(title: string, description: string, path: string, config: SiteConfig = siteConfig): Metadata {
   const canonical = canonicalUrl(path, config);
+  const image = { ...socialImage, url: absoluteUrl('/og.png', config) };
   return {
     title,
     description,
-    // Page-level openGraph replaces the layout's, so name the shared image (app/opengraph-image.tsx) here too.
-    openGraph: { type: 'website', locale: 'th_TH', title, description, siteName: site.name, images: [ogImage], ...(canonical ? { url: canonical } : {}) },
-    twitter: { card: 'summary_large_image', title, description, images: [ogImage.url] },
+    // Page-level openGraph replaces the layout's, so name the shared image here too.
+    openGraph: { type: 'website', locale: 'th_TH', title, description, siteName: site.name, images: [image], ...(canonical ? { url: canonical } : {}) },
+    twitter: { card: 'summary_large_image', title, description, images: [image.url] },
     ...(canonical ? { alternates: { canonical } } : {}),
     robots: config.isIndexable ? { index: true, follow: true } : { index: false, follow: false },
   };

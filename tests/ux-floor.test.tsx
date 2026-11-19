@@ -36,7 +36,7 @@ describe('UX floor', () => {
   it('shares the Open Graph image on service pages too', async () => {
     const { generateMetadata } = await import('@/app/services/[slug]/page');
     const meta = await generateMetadata({ params: Promise.resolve({ slug: pseoService.slug }) });
-    expect(JSON.stringify(meta.openGraph)).toContain('/opengraph-image');
+    expect(JSON.stringify(meta.openGraph)).toMatch(/"url":"https:\/\/[^"]+\/og\.png"/);
     expect(meta.twitter).toMatchObject({ card: 'summary_large_image' });
   });
 

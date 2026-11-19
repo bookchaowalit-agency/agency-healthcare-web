@@ -21,6 +21,7 @@ export const site = {
   "status": "locked",
   "design": {
     "projectName": "solo-agency-healthcare",
+    "productionUrl": "https://solo-agency-healthcare.vercel.app",
     "archetype": "clinical",
     "motif": "clinical",
     "world": "Clinical readiness surface",

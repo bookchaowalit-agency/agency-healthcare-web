@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
 import { site } from '@/lib/site';
-import { siteConfig } from '@/lib/site-config';
+import { siteConfig, socialImage } from '@/lib/site-config';
 import './design-floor/tokens.css';
 import './globals.css';
 import './ux-floor.css';
@@ -30,12 +30,12 @@ const notoSerifThai = localFont({
 });
 
 export const metadata: Metadata = {
-  // Only an approved public URL; without one Next.js uses the deployment URL, never localhost, for og:image.
-  ...(siteConfig.publicUrl ? { metadataBase: new URL(siteConfig.publicUrl) } : {}),
+  // The approved public URL, else the site's own production domain (lib/site.ts): og:image is never localhost.
+  metadataBase: new URL(siteConfig.metadataUrl),
   title: { default: site.name + ' — ' + site.thaiName, template: '%s — ' + site.name },
   description: site.promise,
-  openGraph: { type: 'website', locale: 'th_TH', siteName: site.name, title: site.name + ' — ' + site.thaiName, description: site.promise },
-  twitter: { card: 'summary_large_image', title: site.name + ' — ' + site.thaiName, description: site.promise },
+  openGraph: { type: 'website', locale: 'th_TH', siteName: site.name, title: site.name + ' — ' + site.thaiName, description: site.promise, images: [socialImage] },
+  twitter: { card: 'summary_large_image', title: site.name + ' — ' + site.thaiName, description: site.promise, images: [socialImage.url] },
   ...(siteConfig.publicUrl ? { alternates: { canonical: siteConfig.publicUrl } } : {}),
   robots: siteConfig.isIndexable ? { index: true, follow: true } : { index: false, follow: false },
 };

@@ -1,11 +1,11 @@
 import { ImageResponse } from "next/og";
 import { site } from "@/lib/site";
 
-// Generated at build time so social cards never point at a missing file.
-// Text stays ASCII: the built-in ImageResponse font has no Thai glyphs.
-export const alt = `${site.name} — ${site.design.world}`;
+// Social card at /og.png, rendered once at build time. The static export writes it as out/og.png, so hosts serve it
+// as image/png (an extensionless opengraph-image file is served as application/octet-stream).
+// lib/site-config.ts socialImage points og:image and twitter:image here. Text stays ASCII: the built-in
+// ImageResponse font has no Thai glyphs.
 export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
 export const dynamic = "force-static";
 
 const colors = site.design.colors;
@@ -14,7 +14,7 @@ const TITLE = site.name;
 const SUBTITLE = site.design.world;
 const CHIPS: readonly string[] = site.scope;
 
-export default function OpenGraphImage() {
+export function GET() {
   return new ImageResponse(
     (
       <div
