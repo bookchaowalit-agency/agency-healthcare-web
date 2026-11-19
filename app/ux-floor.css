@@ -6,8 +6,9 @@
  * Floor values (focus ring, 44px targets, Thai heading leading) come from design-floor/tokens.css.
  */
 
-/* Focus: one 3px ring with a 2px offset everywhere (replaces the old 2px / 5px link-only rule). */
-:focus-visible, a:focus-visible { outline: var(--focus-ring-width, 3px) solid var(--focus, var(--accent)); outline-offset: var(--focus-ring-offset, 2px); }
+/* Focus: one 3px ring with a 2px offset everywhere (replaces the old 2px / 5px link-only rule). Without a site
+   --focus the ring is --ink, not --accent: a light accent (e.g. #83b936 on #edf5f4, 2.1:1) misses 3:1 on --bg. */
+:focus-visible, a:focus-visible { outline: var(--focus-ring-width, 3px) solid var(--focus, var(--ink)); outline-offset: var(--focus-ring-offset, 2px); }
 ::selection { color: var(--inverse-ink); background: var(--inverse); }
 html { scroll-padding-top: 24px; }
 
@@ -17,6 +18,8 @@ html { scroll-padding-top: 24px; }
 .site-header nav, .pseo-nav { flex-wrap: wrap; gap: 0 4px; }
 .site-header nav a, .pseo-nav a, .pseo-breadcrumb a { display: inline-flex; align-items: center; min-height: var(--target-touch, 44px); padding: 0 8px; }
 .pseo-breadcrumb a { padding: 0; }
+/* The 44px link and the "/" separators share one centre line. */
+.pseo-breadcrumb { align-items: center; }
 .primary-link { min-height: var(--target-touch, 44px); padding: 14px 0 12px; border-bottom: 2px solid var(--focus, var(--accent)); }
 .pseo-home-link, .readiness-link, .pseo-text-link { display: inline-flex; align-items: center; gap: 6px; min-height: var(--target-touch, 44px); }
 .pseo-button { min-height: var(--target-touch, 44px); }
