@@ -20,6 +20,24 @@ export function ogFingerprint(site: Site): string {
   return JSON.stringify({ v: OG_CARD_VERSION, name, world: design.world, scope, colors: design.colors, url: design.productionUrl });
 }
 
+/** WCAG 2 contrast ratio of two #rrggbb colours (1 to 21). */
+export function contrastRatio(a: string, b: string): number {
+  const luminance = (hex: string) => {
+    const [r, g, bl] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/**
+ * Colour of the "BOOKCHAOWALIT AGENCY" line: the accent when it reaches 3:1 on the card background (the line is
+ * 26px, large text), else ink, so a light accent (Science & Deep Tech, 2.12:1) stays readable in link previews.
+ */
+export function ogLabelColor(colors: { bg: string; ink: string; accent: string }): string {
+  return contrastRatio(colors.accent, colors.bg) >= 3 ? colors.accent : colors.ink;
+}
+
 export function ogCard(site: Site): ReactElement {
   const colors = site.design.colors;
   const chips: readonly string[] = site.scope;
@@ -37,7 +55,7 @@ export function ogCard(site: Site): ReactElement {
         color: colors.ink,
       },
     },
-    h("div", { style: { display: "flex", fontSize: 26, letterSpacing: 8, color: colors.accent } }, "BOOKCHAOWALIT AGENCY"),
+    h("div", { style: { display: "flex", fontSize: 26, letterSpacing: 8, color: ogLabelColor(colors) } }, "BOOKCHAOWALIT AGENCY"),
     h(
       "div",
       { style: { display: "flex", flexDirection: "column" } },

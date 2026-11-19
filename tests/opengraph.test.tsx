@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { site } from "@/lib/site";
-import { OG_SIZE, ogCard, ogFingerprint } from "@/lib/og-card";
+import { OG_SIZE, contrastRatio, ogCard, ogFingerprint, ogLabelColor } from "@/lib/og-card";
 
 // The layout loads local fonts through a build-time transform; a stub is enough to read its metadata.
 vi.mock("next/font/local", () => ({ default: () => ({ variable: "font" }) }));
@@ -31,6 +31,12 @@ describe("social card image", () => {
   it("draws the site name, visual world and every scope chip (node scripts/og.mjs writes it)", () => {
     const markup = renderToStaticMarkup(ogCard(site));
     for (const text of [site.name, site.design.world, ...site.scope]) expect(markup).toContain(text.replace(/&/g, "&amp;"));
+  });
+
+  it("names the agency in a colour with at least 3:1 on the card background", () => {
+    const colors = site.design.colors;
+    expect(contrastRatio(ogLabelColor(colors), colors.bg)).toBeGreaterThanOrEqual(3);
+    expect(renderToStaticMarkup(ogCard(site))).toContain(`color:${ogLabelColor(colors)}">BOOKCHAOWALIT AGENCY`);
   });
 
   it("points og:image and twitter:image at an absolute https .png on the site's own domain without NEXT_PUBLIC_SITE_URL", async () => {
