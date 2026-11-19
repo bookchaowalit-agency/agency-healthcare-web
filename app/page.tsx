@@ -67,7 +67,8 @@ export default function HomePage() {
               <a className="primary-link" href="#offer">{site.cta}<span className="link-mark" aria-hidden="true" /></a>
               {locked ? <span className="status-badge">ยังไม่เปิดรับงาน</span> : null}
             </div>
-            {locked ? <p className="locked-note">{site.fit} <a href={portfolioHref}>ดูทั้ง 14 กลุ่มงาน <span aria-hidden="true">↗</span></a></p> : null}
+            {/* No portfolio link here: the readiness note below holds the page's one link to it (pSEO plan). */}
+            {locked ? <p className="locked-note">{site.fit}</p> : null}
             <Link className="pseo-home-link" href={servicePath}>ดู service page <span aria-hidden="true">↗</span></Link>
             <div className="hero-meta"><span lang="en">{site.design.material}</span><span>showcase / {site.stage}</span></div>
           </div>
