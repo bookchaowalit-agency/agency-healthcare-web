@@ -1,17 +1,9 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import type { ReactElement } from "react";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { site } from "@/lib/site";
-
-// next/og renders with satori at build time; here we only check what the card is asked to draw.
-const calls: { element: ReactElement; options: unknown }[] = [];
-vi.mock("next/og", () => ({
-  ImageResponse: class {
-    constructor(element: ReactElement, options: unknown) {
-      calls.push({ element, options });
-    }
-  },
-}));
+import { OG_SIZE, ogCard } from "@/lib/og-card";
 
 // The layout loads local fonts through a build-time transform; a stub is enough to read its metadata.
 vi.mock("next/font/local", () => ({ default: () => ({ variable: "font" }) }));
@@ -21,18 +13,15 @@ afterEach(() => {
 });
 
 describe("social card image", () => {
-  it("is a static 1200x630 route at /og.png", async () => {
-    const og = await import("@/app/og.png/route");
-    expect(og.size).toEqual({ width: 1200, height: 630 });
-    expect(og.dynamic).toBe("force-static");
+  it("is a committed 1200x630 PNG in public/, not a route handler (AGENTS.md: no API routes)", () => {
+    const png = readFileSync(join(process.cwd(), "public", "og.png"));
+    expect(png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))).toBe(true);
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([OG_SIZE.width, OG_SIZE.height]);
+    expect(existsSync(join(process.cwd(), "app", "og.png"))).toBe(false);
   });
 
-  it("draws the site name, visual world and every scope chip at the declared size", async () => {
-    const { GET, size } = await import("@/app/og.png/route");
-    GET();
-    const { element, options } = calls.at(-1)!;
-    expect(options).toEqual(size);
-    const markup = renderToStaticMarkup(element);
+  it("draws the site name, visual world and every scope chip (node scripts/og.mjs writes it)", () => {
+    const markup = renderToStaticMarkup(ogCard(site));
     for (const text of [site.name, site.design.world, ...site.scope]) expect(markup).toContain(text.replace(/&/g, "&amp;"));
   });
 

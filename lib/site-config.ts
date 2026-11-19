@@ -59,7 +59,7 @@ export function canonicalUrl(path: string, config: SiteConfig = siteConfig) {
   return config.publicUrl ? absoluteUrl(path, config) : undefined;
 }
 
-// Served by app/og.png/route.tsx, which the static export writes as out/og.png (a real .png, so image/png).
+// public/og.png (drawn by scripts/og.mjs, committed), which the static export copies to out/og.png (image/png).
 export const socialImage = { url: absoluteUrl('/og.png'), width: 1200, height: 630, alt: site.name + ' — ' + site.design.world } as const;
 
 export function pageMetadata(title: string, description: string, path: string, config: SiteConfig = siteConfig): Metadata {
