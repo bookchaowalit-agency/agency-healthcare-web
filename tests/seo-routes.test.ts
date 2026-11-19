@@ -16,15 +16,15 @@ afterEach(() => {
 });
 
 describe("robots and sitemap", () => {
-  it("disallow everything and list nothing by default (noindex build)", async () => {
+  it("disallow search crawlers and list nothing by default (noindex build), but let link-preview bots fetch the social card", async () => {
     const { robots, sitemap } = await loadRoutes({ NEXT_PUBLIC_SITE_URL: "", NEXT_PUBLIC_SITE_INDEXABLE: "" });
-    expect(robots()).toEqual({ rules: { userAgent: "*", disallow: "/" } });
+    expect(robots()).toEqual({ rules: [{ userAgent: expect.arrayContaining(['Twitterbot', 'facebookexternalhit']), allow: '/' }, { userAgent: '*', disallow: '/' }] });
     expect(sitemap()).toEqual([]);
   });
 
   it("stay closed when only the URL is set", async () => {
     const { robots, sitemap } = await loadRoutes({ NEXT_PUBLIC_SITE_URL: "https://example.com", NEXT_PUBLIC_SITE_INDEXABLE: "" });
-    expect(robots()).toEqual({ rules: { userAgent: "*", disallow: "/" } });
+    expect(robots()).toEqual({ rules: [{ userAgent: expect.arrayContaining(['Twitterbot', 'facebookexternalhit']), allow: '/' }, { userAgent: '*', disallow: '/' }] });
     expect(sitemap()).toEqual([]);
   });
 
