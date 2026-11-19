@@ -1,41 +1,30 @@
 import Link from 'next/link';
+import { pseoService } from '@/lib/pseo';
+import { LangText } from '@/components/lang-text';
+import SiteLinks, { contactHref, portfolioHref } from '@/components/site-links';
+import { type AgencyStatus, readinessCopy } from '@/lib/readiness';
 import { site } from '@/lib/site';
-
-const statusCopy = {
-  incubating: {
-    label: 'กำลังเปิดรอบ validation',
-    note: 'กำลังทดสอบ buyer, offer และ delivery economics ก่อนเปิดรับงานในขอบเขตที่ชัดเจน',
-  },
-  target: {
-    label: 'เตรียมไว้ใน portfolio',
-    note: 'positioning พร้อมสำหรับการทดสอบ แต่ owner และหลักฐานการส่งมอบยังต้องผ่าน gate ก่อนเปิดรับงาน',
-  },
-  locked: {
-    label: 'future capability',
-    note: 'เก็บไว้สำหรับการวิจัยและวางพันธมิตร ยังไม่มีการรับข้อมูลหรือรับประกันบริการ',
-  },
-} as const;
 
 function Artifact() {
   const labels = site.scope.slice(0, 4);
 
   switch (site.design.motif as string) {
     case 'editorial':
-      return <div className="artifact artifact-editorial" aria-hidden="true"><span>NO. {String(site.number).padStart(2, '0')}</span><strong>{site.name}</strong><i /><em>fit / proof / handoff</em></div>;
+      return <div className="artifact artifact-editorial" aria-hidden="true"><span>NO. {String(site.number).padStart(2, '0')} / role scorecard</span><strong>Role scorecard</strong><ol className="editorial-rows"><li>ผลลัพธ์ที่ role ต้องส่ง</li><li>หลักฐานที่ใช้ตัดสินแต่ละข้อ</li><li>ผู้ตัดสินใจและจุดส่งต่อ</li></ol><i /><em>fit / proof / handoff</em></div>;
     case 'terminal':
       return <div className="artifact artifact-terminal" aria-hidden="true"><div className="terminal-top">READINESS_CONSOLE / {site.stage}</div>{labels.map((label, index) => <div className="terminal-row" key={label}><span>{String(index + 1).padStart(2, '0')}</span><strong>{label}</strong><i /></div>)}<small>status: inspectable</small></div>;
     case 'blueprint':
-      return <div className="artifact artifact-blueprint" aria-hidden="true"><span className="blueprint-axis blueprint-axis-x" /><span className="blueprint-axis blueprint-axis-y" /><span className="blueprint-node node-a" /><span className="blueprint-node node-b" /><span className="blueprint-node node-c" /><strong>ONE WORKFLOW</strong><small>baseline → prototype → acceptance</small></div>;
+      return <div className="artifact artifact-blueprint" aria-hidden="true"><span className="blueprint-axis blueprint-axis-x" /><span className="blueprint-axis blueprint-axis-y" /><span className="blueprint-node node-a" /><span className="blueprint-node node-b" /><span className="blueprint-node node-c" /><span className="blueprint-label label-a">ฐานเดิม</span><span className="blueprint-label label-b">ต้นแบบ</span><span className="blueprint-label label-c">ตรวจรับ</span><strong>ONE WORKFLOW</strong><small>baseline → prototype → acceptance</small></div>;
     case 'boardpaper':
       return <div className="artifact artifact-boardpaper" aria-hidden="true"><div className="boardpaper-head"><strong>CONTROL REGISTER</strong><span>REV / 01</span></div>{labels.map((label, index) => <div className="boardpaper-row" key={label}><span>0{index + 1}</span><strong>{label}</strong><i>owner / evidence</i></div>)}</div>;
     case 'dealroom':
-      return <div className="artifact artifact-dealroom" aria-hidden="true"><div className="dealroom-ticker"><strong>FACT</strong><span>ASSUMPTION</span><em>GAP</em></div><div className="dealroom-bars"><i /><i /><i /><i /><i /></div><small>DILIGENCE / TRACEABLE</small></div>;
+      return <div className="artifact artifact-dealroom" aria-hidden="true"><div className="dealroom-ticker"><strong>FACT</strong><span>ASSUMPTION</span><em>GAP</em></div><div className="dealroom-bars"><i><b>ข้อเท็จจริง</b></i><i><b>สมมติฐาน</b></i><i><b>ช่องว่าง</b></i></div><small>DILIGENCE / TRACEABLE</small></div>;
     case 'fieldmanual':
       return <div className="artifact artifact-fieldmanual" aria-hidden="true"><div className="fieldmanual-stamp">FIELD<br />CHECK</div><div className="fieldmanual-route"><i /><i /><i /><i /></div><strong>ASSET / RISK / ACCEPTANCE</strong><small>HANDOFF MAP — REV A</small></div>;
     case 'labnote':
       return <div className="artifact artifact-labnote" aria-hidden="true"><span className="lab-orbit orbit-one" /><span className="lab-orbit orbit-two" /><span className="lab-node lab-node-a" /><span className="lab-node lab-node-b" /><span className="lab-node lab-node-c" /><strong>TECH → IP → MARKET</strong><small>unknowns remain visible</small></div>;
     case 'chambers':
-      return <div className="artifact artifact-chambers" aria-hidden="true"><div className="chambers-seal">L</div><div className="chambers-rule" /><strong>RIGHT / DUTY / OWNER</strong><small>CAPABILITY FOLIO / FUTURE</small></div>;
+      return <div className="artifact artifact-chambers" aria-hidden="true"><div className="chambers-seal">ก</div><div className="chambers-rule" /><strong>สิทธิ / หน้าที่ / ผู้รับผิดชอบ</strong><em>RIGHT / DUTY / OWNER</em><small>CAPABILITY FOLIO / FUTURE</small></div>;
     case 'capitalledger':
       return <div className="artifact artifact-capitalledger" aria-hidden="true"><div className="ledger-head"><strong>CAPITAL LEDGER</strong><span>THESIS</span></div>{labels.slice(0, 3).map((label, index) => <div className="ledger-row" key={label}><span>0{index + 1}</span><strong>{label}</strong><i /></div>)}<small>risk / governance / operations</small></div>;
     case 'clinical':
@@ -54,7 +43,10 @@ function Artifact() {
 }
 
 export default function HomePage() {
-  const readiness = statusCopy[site.status];
+  const readiness = readinessCopy(site.status);
+  // Widened so the same page compiles for every vertical, whatever its status literal.
+  const locked = (site.status as AgencyStatus) === 'locked';
+  const servicePath = `/services/${pseoService.slug}`;
 
   return (
     <div className={`site-shell archetype-${site.design.archetype}`} data-site={site.slug}>
@@ -63,21 +55,25 @@ export default function HomePage() {
           <span className="brand-mark" aria-hidden="true">{String(site.number).padStart(2, '0')}</span>
           <span><strong>{site.name}</strong><small>{site.thaiName}</small></span>
         </a>
-        <nav aria-label="เมนูหลัก"><a href="#offer">Scope</a><a href="#readiness">Readiness</a><Link href="/services/health-medtech-readiness-map/">Service</Link></nav>
+        <nav aria-label="เมนูหลัก"><a href="#offer">ขอบเขต</a><a href="#readiness">ความพร้อม</a><Link href={servicePath}>บริการ</Link></nav>
       </header>
 
       <main id="main-content" className="site-main">
         <section id="top" className="hero">
           <div className="hero-copy">
-            <h1>{site.promise}</h1>
-            <p className="hero-thesis">{site.design.thesis}</p>
-            <div className="hero-meta"><span>{site.design.material}</span><span>showcase / {site.stage}</span></div>
-            <a className="primary-link" href="#offer">{site.cta}<span className="link-mark" aria-hidden="true" /></a>
-            <Link className="pseo-home-link" href="/services/health-medtech-readiness-map/">ดู service page <span aria-hidden="true">↗</span></Link>
+            <h1><LangText text={site.promise} /></h1>
+            <p className="hero-thesis"><LangText text={site.design.thesis} /></p>
+            <div className="hero-actions">
+              <a className="primary-link" href="#offer">{site.cta}<span className="link-mark" aria-hidden="true" /></a>
+              {locked ? <span className="status-badge">ยังไม่เปิดรับงาน</span> : null}
+            </div>
+            {locked ? <p className="locked-note">{site.fit} <a href={portfolioHref}>ดูกลุ่มงานที่เปิดอยู่ <span aria-hidden="true">↗</span></a></p> : null}
+            <Link className="pseo-home-link" href={servicePath}>ดู service page <span aria-hidden="true">↗</span></Link>
+            <div className="hero-meta"><span lang="en">{site.design.material}</span><span>showcase / {site.stage}</span></div>
           </div>
           <div className="hero-art">
             <Artifact />
-            <p className="artifact-caption">{site.design.artifactCaption}</p>
+            <p className="artifact-caption" lang="en">{site.design.artifactCaption}</p>
           </div>
         </section>
 
@@ -95,7 +91,7 @@ export default function HomePage() {
         <section id="offer" className="offer-section">
           <div className="offer-intro"><h2>{site.offer}</h2><p>{site.offerDetail}</p></div>
           <div className="offer-register">
-            <div className="register-row"><span>ขอบเขตตั้งต้น</span><div className="scope-list">{site.scope.map((item) => <strong key={item}>{item}</strong>)}</div></div>
+            <div className="register-row"><span>ขอบเขตตั้งต้น</span><div className="scope-list">{site.scope.map((item) => <strong key={item}><LangText text={item} /></strong>)}</div></div>
             <div className="register-row"><span>สิ่งที่ต้อง build</span><p>{site.asset}</p></div>
             <div className="register-row"><span>fit ตอนนี้</span><p>{site.fit}</p></div>
           </div>
@@ -103,10 +99,10 @@ export default function HomePage() {
 
         <section id="readiness" className="readiness-section">
           <div><h2>สถานะที่พูดได้ตรง ๆ</h2><p>หน้าเว็บนี้ใช้สำหรับ showcase และ message testing เท่านั้น ยังไม่มี lead form หรือการรับข้อมูลลูกค้า</p></div>
-          <div className="readiness-note"><strong>{readiness.label}</strong><p>{readiness.note}</p><span>{site.stage} / {site.status}</span></div>
+          <div className="readiness-note"><strong>{readiness.label}</strong><p>{readiness.note}</p>{locked ? <a className="readiness-link" href={portfolioHref}>ดูกลุ่มงานที่เปิดอยู่ <span aria-hidden="true">↗</span></a> : <a className="readiness-link" href={contactHref}>คุยเรื่องขอบเขตนี้ทางอีเมล <span aria-hidden="true">↗</span></a>}<span>{site.stage} / {site.status}</span></div>
         </section>
 
-        <footer className="site-footer"><span>SE / {site.name}</span><span>public showcase · content-safe · no client claims</span></footer>
+        <footer className="site-footer"><span>SE / {site.name}</span><span>public showcase · content-safe · no client claims</span><SiteLinks /></footer>
       </main>
     </div>
   );

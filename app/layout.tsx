@@ -1,12 +1,33 @@
 import type { Metadata } from 'next';
-import { Noto_Sans_Thai, Noto_Serif_Thai } from 'next/font/google';
+import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
 import { site } from '@/lib/site';
 import { siteConfig } from '@/lib/site-config';
+import './design-floor/tokens.css';
 import './globals.css';
+import './ux-floor.css';
 
-const sans = Noto_Sans_Thai({ subsets: ['thai'], weight: ['400', '500', '600', '700'], variable: '--font-sans-thai', display: 'swap' });
-const serif = Noto_Serif_Thai({ subsets: ['thai'], weight: ['400', '600', '700'], variable: '--font-serif-thai', display: 'swap' });
+const notoSansThai = localFont({
+  src: [
+    { path: './fonts/NotoSansThai-Variable.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/NotoSansThai-Variable.woff2', weight: '500', style: 'normal' },
+    { path: './fonts/NotoSansThai-Variable.woff2', weight: '600', style: 'normal' },
+    { path: './fonts/NotoSansThai-Variable.woff2', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-sans-thai',
+  display: 'swap',
+});
+
+const notoSerifThai = localFont({
+  src: [
+    { path: './fonts/NotoSerifThai-Variable.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/NotoSerifThai-Variable.woff2', weight: '600', style: 'normal' },
+    { path: './fonts/NotoSerifThai-Variable.woff2', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-serif-thai',
+  display: 'swap',
+  adjustFontFallback: 'Times New Roman',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.metadataUrl),
@@ -19,5 +40,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
-  return <html lang="th" className={`${sans.variable} ${serif.variable}`}><body><a className="skip-link" href="#main-content">ข้ามไปเนื้อหาหลัก</a>{children}</body></html>;
+  return <html lang="th" className={`${notoSansThai.variable} ${notoSerifThai.variable}`}><body><a className="skip-link" href="#main-content">ข้ามไปเนื้อหาหลัก</a>{children}</body></html>;
 }

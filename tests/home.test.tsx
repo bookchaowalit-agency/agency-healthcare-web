@@ -7,17 +7,17 @@ import ServicePage from "@/app/services/[slug]/page";
 import { pseoService } from "@/lib/pseo";
 import { site } from "@/lib/site";
 
-// next/font/google only works inside a Next build; the layout just needs the CSS variable names.
-vi.mock("next/font/google", () => ({ Noto_Sans_Thai: () => ({ variable: "font-sans" }), Noto_Serif_Thai: () => ({ variable: "font-serif" }) }));
+// next/font/local only works inside a Next build; the layout just needs the CSS variable names.
+vi.mock("next/font/local", () => ({ default: () => ({ variable: "font-var" }) }));
 
 const esc = (text: string) => text.replace(/&/g, "&amp;");
 
 describe("home page", () => {
   it("renders the agency promise, offer, scope and the no-lead-form notice", () => {
     const html = renderToString(<Home />);
-    expect(html).toContain(esc(site.promise));
+    expect(html.replace(/<[^>]*>/g, "")).toContain(esc(site.promise));
     expect(html).toContain(esc(site.offer));
-    for (const item of site.scope) expect(html).toContain(esc(item));
+    for (const item of site.scope) expect(html.replace(/<[^>]*>/g, "")).toContain(esc(item));
     expect(html).toContain("ยังไม่มี lead form หรือการรับข้อมูลลูกค้า");
     expect(html).toContain("no client claims");
   });

@@ -1,0 +1,106 @@
+/*
+ * Shared UX floor for every agency showcase site (2026-11-18 review). Loaded after globals.css and
+ * identical in every site, so the fixes roll out once. Site colours stay in globals.css :root;
+ * a site may also set --focus (focus ring, lines: >= 3:1 on --bg) and --accent-text (accent used
+ * as text: >= 4.5:1 on --bg and --panel) when its --accent is too light for those jobs.
+ * Floor values (focus ring, 44px targets, Thai heading leading) come from design-floor/tokens.css.
+ */
+
+/* Focus: one 3px ring with a 2px offset everywhere (replaces the old 2px / 5px link-only rule). */
+:focus-visible, a:focus-visible { outline: var(--focus-ring-width, 3px) solid var(--focus, var(--accent)); outline-offset: var(--focus-ring-offset, 2px); }
+::selection { color: var(--inverse-ink); background: var(--inverse); }
+html { scroll-padding-top: 24px; }
+
+/* Tap targets: 44px for every link people press. */
+.skip-link { display: inline-flex; align-items: center; min-height: var(--target-touch, 44px); padding: 0 16px; }
+.brand, .pseo-brand { min-height: var(--target-touch, 44px); }
+.site-header nav, .pseo-nav { flex-wrap: wrap; gap: 0 4px; }
+.site-header nav a, .pseo-nav a, .pseo-breadcrumb a { display: inline-flex; align-items: center; min-height: var(--target-touch, 44px); padding: 0 8px; }
+.pseo-breadcrumb a { padding: 0; }
+.primary-link { min-height: var(--target-touch, 44px); padding: 14px 0 12px; border-bottom: 2px solid var(--focus, var(--accent)); }
+.pseo-home-link, .readiness-link, .pseo-text-link { display: inline-flex; align-items: center; gap: 6px; min-height: var(--target-touch, 44px); }
+.pseo-button { min-height: var(--target-touch, 44px); }
+.primary-link:hover, .site-header nav a:hover, .pseo-nav a:hover { color: var(--accent-text, var(--accent)); }
+
+/* Text floor: 12px for mono labels, 14px+ for text people read; no forced capitals on small labels. */
+.site-header nav, .pseo-nav, .brand small, .pseo-brand small, .hero-meta, .signal-row span, .register-row > span,
+.readiness-note span, .site-footer, .pseo-footer, .pseo-breadcrumb, .pseo-eyebrow, .pseo-aside dt, .pseo-steps li > span,
+.artifact small, .artifact > span, .artifact em, .terminal-top, .terminal-row span, .boardpaper-head span, .boardpaper-row span,
+.boardpaper-row i, .ledger-head span, .ledger-row span, .ledger-row i, .dealroom-ticker, .plan-room, .mission-stamp {
+  font-size: 12px; letter-spacing: .02em; text-transform: none;
+}
+/* Nav labels are Thai words now: sans at body size reads better than 12px mono. */
+.site-header nav, .pseo-nav { font-family: var(--sans); font-size: 14px; letter-spacing: normal; }
+.artifact-blueprint strong, .artifact-labnote strong, .artifact-architectural strong, .artifact-riskmatrix strong, .artifact-clinical strong,
+.artifact-solarfield strong, .artifact-missionbrief strong, .artifact-fieldmanual strong, .dealroom-ticker strong { font-size: 12px; }
+.signal-row span, .register-row > span { font-size: 13px; }
+.artifact-caption { font-size: 14px; line-height: 1.6; }
+.readiness-section > div:first-child p { font-size: 15px; line-height: 1.75; }
+.pseo-aside dd { font-size: 14px; }
+.pseo-home-link { font-size: 14px; }
+
+/* Thai headings: no negative tracking, room for tone marks (design floor: 1.25 display, 1.35 headings). */
+.site-shell .hero h1 { font-size: clamp(36px, 4.2vw, 60px); letter-spacing: normal; line-height: 1.25; text-transform: none; }
+.story-section h2, .offer-intro h2, .readiness-section h2, .pseo-section-heading h2, .pseo-readiness h2, .pseo-card h2, .pseo-index-card h2 { letter-spacing: normal; line-height: var(--leading-thai-heading, 1.35); }
+.story-section h2, .offer-intro h2, .readiness-section h2, .pseo-section-heading h2, .pseo-readiness h2 { font-size: clamp(30px, 3.6vw, 52px); }
+.pseo-card h2, .pseo-index-card h2 { font-size: clamp(26px, 2.8vw, 40px); }
+/* The offer name sits in the narrow left column: keep it card-sized, and stack the row below 1100px. */
+.offer-intro h2 { font-size: clamp(26px, 2.6vw, 38px); }
+@media (max-width: 1100px) { .offer-section { grid-template-columns: 1fr; } }
+.story-section > p { font-size: clamp(22px, 2.4vw, 34px); letter-spacing: normal; line-height: 1.5; }
+.pseo-hero h1, .pseo-index-hero h1 { font-size: clamp(34px, 4.4vw, 64px); letter-spacing: normal; line-height: 1.25; }
+.brand strong, .pseo-brand strong { letter-spacing: normal; line-height: 1.3; }
+.readiness-note strong, .pseo-aside > strong { letter-spacing: normal; line-height: 1.3; }
+.signal-row strong, .scope-list strong { line-height: 1.4; }
+.pseo-section-heading h2, .pseo-readiness h2, .pseo-card h2 { margin-top: .32em; }
+.pseo-readiness { margin-top: clamp(40px, 6vw, 72px); }
+
+/* Hero: CTA first, then the locked-state note, then the meta line. */
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 31px; }
+.hero-actions .primary-link { margin-top: 0; }
+.status-badge { display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; border: 1px dashed currentColor; border-radius: 999px; color: var(--ink); font-size: 13px; font-weight: 600; }
+.locked-note { max-width: 560px; margin: 16px 0 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+.locked-note a { display: inline-flex; align-items: center; gap: 4px; min-height: var(--target-touch, 44px); color: var(--ink); font-weight: 600; text-underline-offset: 4px; }
+.hero-meta { margin-top: 20px; }
+.readiness-link { margin-top: 16px; color: inherit; font-size: 15px; font-weight: 600; text-underline-offset: 4px; }
+/* .readiness-note span styles the status line; the link's arrow span must stay inline. */
+.readiness-note .readiness-link span { display: inline; margin: 0; padding: 0; border: 0; color: inherit; font-family: inherit; font-size: inherit; }
+
+/* Footer: hub, portfolio, privacy, status and contact links. */
+.site-footer, .pseo-footer { flex-wrap: wrap; align-items: center; }
+.site-links { display: flex; flex-wrap: wrap; gap: 0 18px; width: 100%; font-family: var(--sans); font-size: 14px; letter-spacing: normal; text-transform: none; }
+.site-links a { display: inline-flex; align-items: center; min-height: var(--target-touch, 44px); color: var(--ink); text-underline-offset: 4px; }
+
+/* Artifact fixes. */
+.archetype-riskmatrix .hero-copy { transform: none; }
+.archetype-terminal .hero-art { background: var(--panel); }
+.artifact-labnote, .artifact-solarfield { border-color: var(--focus, var(--accent)); }
+.artifact-solarfield strong, .artifact-solarfield small { z-index: 1; padding: 2px 8px; background: var(--bg); }
+.fieldmanual-stamp, .mission-stamp { color: var(--accent-text, var(--accent)); }
+.fieldmanual-stamp { position: relative; border-color: transparent; transform: none; }
+.fieldmanual-stamp::before { position: absolute; inset: 0; border: 1px solid var(--focus, var(--accent)); content: ''; transform: rotate(-4deg); }
+.archetype-clinical .primary-link { border-color: var(--focus, var(--accent)); }
+.editorial-rows { margin: 0; padding: 0 0 0 20px; color: var(--ink); font-size: 14px; line-height: 1.6; }
+.editorial-rows li + li { margin-top: 6px; }
+.artifact-editorial strong { font-size: clamp(32px, 3.6vw, 48px); letter-spacing: -.01em; line-height: 1.1; }
+.blueprint-label { position: absolute; color: var(--ink); font-size: 13px; font-weight: 600; }
+.label-a { top: calc(29% + 24px); left: calc(24% - 8px); }.label-b { top: calc(43% + 24px); right: calc(19% - 8px); }.label-c { bottom: 21%; left: calc(47% + 26px); }
+.dealroom-bars { gap: 16px; }
+.dealroom-bars i { position: relative; }
+.dealroom-bars i:nth-child(1) { height: 84%; }.dealroom-bars i:nth-child(2) { height: 52%; background: color-mix(in srgb, var(--accent) 70%, var(--bg)); }.dealroom-bars i:nth-child(3) { height: 26%; background: color-mix(in srgb, var(--accent) 45%, var(--bg)); }
+.dealroom-bars b { position: absolute; top: -22px; left: 0; color: var(--ink); font-size: 12px; font-style: normal; font-weight: 600; white-space: nowrap; }
+.artifact-chambers em { margin-top: 8px; }
+
+@media (max-width: 650px) {
+  .hero { padding-top: 32px; }
+  .site-shell .hero h1 { font-size: clamp(34px, 9vw, 48px); }
+  .pseo-hero h1, .pseo-index-hero h1 { font-size: clamp(32px, 9vw, 44px); }
+  .site-header, .pseo-header { gap: 4px; }
+  .site-header nav, .pseo-nav { margin-left: -8px; }
+  .pseo-index-card { flex-direction: column; align-items: stretch; }
+  .pseo-index-card > span { align-self: flex-end; }
+}
+
+@media (forced-colors: active) {
+  .primary-link, .status-badge { border-color: CanvasText; }
+}
