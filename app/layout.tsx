@@ -30,7 +30,8 @@ const notoSerifThai = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.metadataUrl),
+  // Only an approved public URL; without one Next.js uses the deployment URL, never localhost, for og:image.
+  ...(siteConfig.publicUrl ? { metadataBase: new URL(siteConfig.publicUrl) } : {}),
   title: { default: site.name + ' — ' + site.thaiName, template: '%s — ' + site.name },
   description: site.promise,
   openGraph: { type: 'website', locale: 'th_TH', siteName: site.name, title: site.name + ' — ' + site.thaiName, description: site.promise },

@@ -64,6 +64,9 @@ html { scroll-padding-top: 24px; }
 .locked-note a { display: inline-flex; align-items: center; gap: 4px; min-height: var(--target-touch, 44px); color: var(--ink); font-weight: 600; text-underline-offset: 4px; }
 .hero-meta { margin-top: 20px; }
 .readiness-link { margin-top: 16px; color: inherit; font-size: 15px; font-weight: 600; text-underline-offset: 4px; }
+/* The readiness card sits on --inverse (light on dark themes): the focus ring uses its ink, not --accent.
+   A site that restyles the card sets --readiness-focus. */
+.readiness-note a:focus-visible { outline-color: var(--readiness-focus, var(--inverse-ink)); }
 /* .readiness-note span styles the status line; the link's arrow span must stay inline. */
 .readiness-note .readiness-link span { display: inline; margin: 0; padding: 0; border: 0; color: inherit; font-family: inherit; font-size: inherit; }
 

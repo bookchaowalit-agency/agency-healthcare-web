@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { pseoService } from '@/lib/pseo';
 import { LangText } from '@/components/lang-text';
-import SiteLinks, { contactHref, portfolioHref } from '@/components/site-links';
+import SiteLinks, { portfolioHref } from '@/components/site-links';
 import { type AgencyStatus, readinessCopy } from '@/lib/readiness';
 import { site } from '@/lib/site';
 
@@ -67,7 +67,7 @@ export default function HomePage() {
               <a className="primary-link" href="#offer">{site.cta}<span className="link-mark" aria-hidden="true" /></a>
               {locked ? <span className="status-badge">ยังไม่เปิดรับงาน</span> : null}
             </div>
-            {locked ? <p className="locked-note">{site.fit} <a href={portfolioHref}>ดูกลุ่มงานที่เปิดอยู่ <span aria-hidden="true">↗</span></a></p> : null}
+            {locked ? <p className="locked-note">{site.fit} <a href={portfolioHref}>ดูทั้ง 14 กลุ่มงาน <span aria-hidden="true">↗</span></a></p> : null}
             <Link className="pseo-home-link" href={servicePath}>ดู service page <span aria-hidden="true">↗</span></Link>
             <div className="hero-meta"><span lang="en">{site.design.material}</span><span>showcase / {site.stage}</span></div>
           </div>
@@ -99,7 +99,7 @@ export default function HomePage() {
 
         <section id="readiness" className="readiness-section">
           <div><h2>สถานะที่พูดได้ตรง ๆ</h2><p>หน้าเว็บนี้ใช้สำหรับ showcase และ message testing เท่านั้น ยังไม่มี lead form หรือการรับข้อมูลลูกค้า</p></div>
-          <div className="readiness-note"><strong>{readiness.label}</strong><p>{readiness.note}</p>{locked ? <a className="readiness-link" href={portfolioHref}>ดูกลุ่มงานที่เปิดอยู่ <span aria-hidden="true">↗</span></a> : <a className="readiness-link" href={contactHref}>คุยเรื่องขอบเขตนี้ทางอีเมล <span aria-hidden="true">↗</span></a>}<span>{site.stage} / {site.status}</span></div>
+          <div className="readiness-note"><strong>{readiness.label}</strong><p>{readiness.note}</p>{/* No inquiry call to action until the readiness gate opens intake (AGENTS.md); point to the portfolio instead. */}<a className="readiness-link" href={portfolioHref}>ดูทั้ง 14 กลุ่มงาน <span aria-hidden="true">↗</span></a><span>{site.stage} / {site.status}</span></div>
         </section>
 
         <footer className="site-footer"><span>SE / {site.name}</span><span>public showcase · content-safe · no client claims</span><SiteLinks /></footer>

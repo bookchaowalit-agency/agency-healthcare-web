@@ -24,15 +24,20 @@ describe('UX floor', () => {
     expect(html).not.toMatch(/>Scope</);
   });
 
-  it('gives each readiness state a real next step', () => {
+  it('gives each readiness state a next step without inviting an inquiry before the gate opens', () => {
     const html = renderToString(<Home />);
-    if ((site.status as AgencyStatus) === 'locked') {
-      expect(html).toContain('ยังไม่เปิดรับงาน');
-      expect(html).toContain('ดูกลุ่มงานที่เปิดอยู่');
-    } else {
-      expect(html).toContain('คุยเรื่องขอบเขตนี้ทางอีเมล');
-      expect(html).not.toContain('ยังไม่เปิดรับงาน');
-    }
+    expect(html).toContain('ดูทั้ง 14 กลุ่มงาน');
+    // The readiness note must not invite an email inquiry; the only mailto is the footer Contact link.
+    expect(html.match(/href="mailto:/g)).toHaveLength(1);
+    if ((site.status as AgencyStatus) === 'locked') expect(html).toContain('ยังไม่เปิดรับงาน');
+    else expect(html).not.toContain('ยังไม่เปิดรับงาน');
+  });
+
+  it('shares the Open Graph image on service pages too', async () => {
+    const { generateMetadata } = await import('@/app/services/[slug]/page');
+    const meta = await generateMetadata({ params: Promise.resolve({ slug: pseoService.slug }) });
+    expect(JSON.stringify(meta.openGraph)).toContain('/opengraph-image');
+    expect(meta.twitter).toMatchObject({ card: 'summary_large_image' });
   });
 
   it('marks English runs in Thai copy with lang="en"', () => {
