@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { pseoService } from '@/lib/pseo';
 import { LangText } from '@/components/lang-text';
-import SiteLinks, { portfolioHref } from '@/components/site-links';
+import SiteLinks, { hubHref, portfolioHref } from '@/components/site-links';
 import { type AgencyStatus, readinessCopy } from '@/lib/readiness';
 import { site } from '@/lib/site';
 
@@ -51,11 +51,11 @@ export default function HomePage() {
   return (
     <div className={`site-shell archetype-${site.design.archetype}`} data-site={site.slug}>
       <header className="site-header">
-        <a className="brand" href="#top">
+        <a className="brand" href={hubHref} aria-label="ไปยังเว็บไซต์หลัก bookchaowalit.com">
           <span className="brand-mark" aria-hidden="true">{String(site.number).padStart(2, '0')}</span>
           <span><strong>{site.name}</strong><small>{site.thaiName}</small></span>
         </a>
-        <nav aria-label="เมนูหลัก"><a href="#offer">ขอบเขต</a><a href="#readiness">ความพร้อม</a><Link href={servicePath}>บริการ</Link></nav>
+        <nav aria-label="เมนูหลัก"><a href="#offer">ขอบเขต</a><a href="#readiness">ความพร้อม</a><a href={portfolioHref}>บริการ</a></nav>
       </header>
 
       <main id="main-content" className="site-main">
@@ -67,10 +67,9 @@ export default function HomePage() {
               <a className="primary-link" href="#offer">{site.cta}<span className="link-mark" aria-hidden="true" /></a>
               {locked ? <span className="status-badge">ยังไม่เปิดรับงาน</span> : null}
             </div>
-            {/* No portfolio link here: the readiness note below holds the page's one link to it (pSEO plan). */}
-            {locked ? <p className="locked-note">{site.fit}</p> : null}
-            <Link className="pseo-home-link" href={servicePath}>ดู service page <span aria-hidden="true">↗</span></Link>
             <div className="hero-meta"><span lang="en">{site.design.material}</span><span>showcase / {site.stage}</span></div>
+            {locked ? <p className="locked-note">{site.fit}</p> : null}
+            <Link className="pseo-home-link" href={servicePath}>ดูรายละเอียดบริการในอนาคต <span aria-hidden="true">↗</span></Link>
           </div>
           <div className="hero-art">
             <Artifact />
@@ -103,7 +102,7 @@ export default function HomePage() {
           <div className="readiness-note"><strong>{readiness.label}</strong><p>{readiness.note}</p>{/* No inquiry call to action until the readiness gate opens intake (AGENTS.md); point to the portfolio instead. */}<a className="readiness-link" href={portfolioHref}>ดูทั้ง 14 กลุ่มงาน <span aria-hidden="true">↗</span></a><span>{site.stage} / {site.status}</span></div>
         </section>
 
-        <footer className="site-footer"><span>SE / {site.name}</span><span>public showcase · content-safe · no client claims</span><SiteLinks /></footer>
+        <footer className="site-footer"><span>SE / {site.name}</span><span>public showcase · content-safe · no client claims</span><SiteLinks includeHubAndPortfolio /></footer>
       </main>
     </div>
   );
