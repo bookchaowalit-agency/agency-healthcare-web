@@ -43,7 +43,7 @@ html { scroll-padding-top: 24px; }
 .pseo-home-link { font-size: 14px; }
 
 /* Thai text: no negative tracking, room for tone marks (design floor checker: headings >= 1.3, body >= 1.6). */
-.site-shell .hero h1 { font-size: clamp(36px, 4.2vw, 60px); letter-spacing: normal; line-height: 1.3; text-transform: none; }
+.site-shell .hero h1 { font-size: clamp(40px, 5.2vw, 76px); letter-spacing: normal; line-height: 1.25; text-transform: none; }
 .story-section h2, .offer-intro h2, .readiness-section h2, .pseo-section-heading h2, .pseo-readiness h2, .pseo-card h2, .pseo-index-card h2 { letter-spacing: normal; line-height: var(--leading-thai-heading, 1.35); }
 .story-section h2, .offer-intro h2, .readiness-section h2, .pseo-section-heading h2, .pseo-readiness h2 { font-size: clamp(30px, 3.6vw, 52px); }
 .pseo-card h2, .pseo-index-card h2 { font-size: clamp(26px, 2.8vw, 40px); }
@@ -100,7 +100,7 @@ html { scroll-padding-top: 24px; }
 
 @media (max-width: 650px) {
   .hero { padding-top: 32px; }
-  .site-shell .hero h1 { font-size: clamp(34px, 9vw, 48px); }
+  .site-shell .hero h1 { font-size: clamp(34px, 9vw, 36px); }
   .pseo-hero h1, .pseo-index-hero h1 { font-size: clamp(32px, 9vw, 44px); }
   .site-header, .pseo-header { gap: 4px; }
   .site-header nav, .pseo-nav { margin-left: -8px; }

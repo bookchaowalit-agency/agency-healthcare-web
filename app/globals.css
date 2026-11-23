@@ -1,10 +1,12 @@
 :root {
   --bg: #f3f8f6;
   --ink: #173e3d;
-  --muted: #4f6d6b;
+  --muted: #4c6967;
   --line: #b5d1cb;
   --panel: #dceee8;
   --accent: #e66b5b;
+  --focus: #a64d42;
+  --accent-text: var(--focus);
   --inverse: #185052;
   --inverse-ink: #f0faf6;
   --sans: var(--font-sans-thai), Arial, sans-serif;

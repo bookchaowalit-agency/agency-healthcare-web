@@ -31,7 +31,7 @@ export const site = {
     "colors": {
       "bg": "#f3f8f6",
       "ink": "#173e3d",
-      "muted": "#557674",
+      "muted": "#4c6967",
       "line": "#b5d1cb",
       "panel": "#dceee8",
       "accent": "#e66b5b",

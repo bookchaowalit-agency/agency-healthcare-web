@@ -22,11 +22,11 @@ describe("home page", () => {
     expect(html).toContain("no client claims");
   });
 
-  it("links to the service page from the nav and the hero", () => {
+  it("links to the future service detail from the hero", () => {
     const html = renderToString(<Home />);
     // next/link adds the trailing slash only inside a Next build (trailingSlash: true); the export output is checked in the UI gate.
     const links = html.match(new RegExp(`href="/services/${pseoService.slug}/?"`, "g")) ?? [];
-    expect(links).toHaveLength(2);
+    expect(links).toHaveLength(1);
   });
 });
 
